@@ -1,0 +1,28 @@
+
+.sti-menu li{
+	margin:0 1px 0 1px;
+}
+.sti-menu li a{
+	display:block;
+	overflow:hidden;
+	height:100%;
+	width:100%;
+	position:relative;
+}
+.sti-menu li a h2{
+	font-size:12px;
+	position:absolute;
+	width:100%;
+	top:40px;
+}
+.sti-menu li a h3{
+	font-family: Baskerville, "Hoefler Text", Garamond, "Times New Roman", serif; 
+	font-size:11px;
+	font-style:italic;
+	color: #cdcdcd;
+	position:absolute;
+	top:65px;
+	left:2px;
+	width:100%;
+	padding:1px;
+}

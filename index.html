@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="generator" content="">
+    <meta charset="utf-8">
+    <title>Ken Nguyen's portfolio</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/stimenu.css" />
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.10.1.custom.js"></script>
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <section class="top">
+                <figure>
+                    <figcaption></figcaption>
+                    <img src="images/logo.png" alt="ken nguyen's logo, nguyen duc thao, thaond">
+                </figure>
+                <nav class="menu">
+                    <ul id="sti-menu" class="sti-menu">
+                        <li >
+                            <a href="#home">
+                                <h2 data-type="mText" class="sti-item">HOME</h2>
+                                <h3 data-type="sText" class="sti-item">Introduce</h3>
+                                
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#about">
+                                <h2 data-type="mText" class="sti-item">ABOUT</h2>
+                                <h3 data-type="sText" class="sti-item">My info</h3>
+                               
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#order">
+                                <h2 data-type="mText" class="sti-item">ORDER</h2>
+                                <h3 data-type="sText" class="sti-item">Have job</h3>
+                               
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#gallery">
+                                <h2 data-type="mText" class="sti-item">GALLERY</h2>
+                                <h3 data-type="sText" class="sti-item">For a healthier future</h3>
+                                
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#download">
+                                <h2 data-type="mText" class="sti-item">DOWNLOAD</h2>
+                                <h3 data-type="sText" class="sti-item">From the latest research</h3>
+                               
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#client">
+                                <h2 data-type="mText" class="sti-item">CLIENT</h2>
+                                <h3 data-type="sText" class="sti-item">From the latest research</h3>
+                               
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#support">
+                                <h2 data-type="mText" class="sti-item">SUPPORT</h2>
+                                <h3 data-type="sText" class="sti-item">From the latest research</h3>
+                                
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#contact">
+                                <h2 data-type="mText" class="sti-item">CONTACT</h2>
+                                <h3 data-type="sText" class="sti-item">From the latest research</h3>
+                                
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+        </header>
+        <!--************* HOME PAGE ********************-->
+        <section class="content" id="home">
+            <section class="slide">
+                PAGE 1
+            </section>
+        </section>
+
+        <!--************* ABOUT PAGE ********************-->
+        <section class="content" id="about">
+            <section class="slide">
+                PAGE 2
+            </section>
+        </section>
+
+        <!--************* ORDER PAGE ********************-->
+        <section class="content" id="order">
+            <section class="slide">
+                PAGE 2
+            </section>
+        </section>
+
+        <!--************* GALLERY PAGE ********************-->
+        <section class="content" id="gallery">
+            <section class="slide">
+                PAGE 2
+            </section>
+        </section>
+
+        <!--************* DOWNLOAD PAGE ********************-->
+        <section class="content" id="download">
+            <section class="slide">
+                PAGE 2
+            </section>
+        </section>
+
+        <!--************* CLIENT PAGE ********************-->
+        <section class="content" id="client">
+            <section class="slide">
+                PAGE 2
+            </section>
+        </section>
+
+        <!--************* SUPPORT PAGE ********************-->
+        <section class="content" id="support">
+            <section class="slide">
+                PAGE 2
+            </section>
+        </section>
+
+        <!--************* CONTATC PAGE ********************-->
+        <section class="content" id="contact">
+            <section class="slide">
+                PAGE 2
+            </section>
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+        </footer> <!-- end of footer -->
+
+    </div> <!-- end of wrapper -->
+
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/jquery.scrollTo.js"></script>
+    <script src="js/jquery.nav.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('nav').onePageNav({
+                filter: ':not(.external)'
+            });
+            //active change
+            $('nav').onePageNav({
+                currentClass: 'current',
+                changeHash: false,
+                scrollSpeed: 750,
+                scrollOffset: 30,
+                scrollThreshold: 0.5,
+                filter: '',
+                easing: 'swing',
+                begin: function() {
+                    //I get fired when the animation is starting
+                },
+                end: function() {
+                    //I get fired when the animation is ending
+                },
+                scrollChange: function($currentListItem) {
+                    //I get fired when you enter a section and I pass the list item of the section
+                }
+            });
+        });
+    </script>
+
+    <!-- ANIMATION MENU -->
+    <script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
+        <script type="text/javascript" src="js/jquery.iconmenu.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $('#sti-menu').iconmenu({
+                    animMouseenter  : {
+                        'mText' : {speed : 400, easing : 'easeOutExpo', delay : 140, dir : 1},
+                        'sText' : {speed : 400, easing : 'easeOutExpo', delay : 0, dir : 1},
+                        'icon'  : {speed : 800, easing : 'easeOutBounce', delay : 280, dir : 1}
+                    },
+                    animMouseleave  : {
+                        'mText' : {speed : 400, easing : 'easeInExpo', delay : 140, dir : 1},
+                        'sText' : {speed : 400, easing : 'easeInExpo', delay : 280, dir : 1},
+                        'icon'  : {speed : 400, easing : 'easeInExpo', delay : 0, dir : 1}
+                    }
+                });
+            });
+        </script>
+
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+* {
+    margin:0;
+    padding: 0
+}
+.wrapper {
+    height:auto;
+    width:100%;
+}
+header {
+    margin: auto;
+    width:100%;
+    height:115px;
+    border-top:10px solid #00aeef;
+    background:/*url('../images/bg_line.png') repeat, */ url('../images/line_header.png') repeat-x left bottom 2px;
+    background-color: #ffffff;
+    position: fixed;
+    top:0;
+    overflow:hidden;
+}
+.content {
+    height:640px;
+    width: 100%;
+    padding-top: 135px;
+}
+#home {
+    background-color: #ccc;
+}
+#about {
+    background-color: #e34;
+}
+#contact {
+    background-color:green;
+}
+#support {
+    background-color: white;
+}
+#gallery {
+    background-color: blue;
+}
+#download {
+    background-color: yellow;
+}
+#client {
+    background-color: violet;
+}
+#order {
+    background-color: orange;
+}
+footer {
+    width:100%;
+    height:28px;
+    background-color: #0076a3;
+    position:fixed;
+    bottom:0px;
+}
+.top {
+    width:1170px;
+    margin:auto;
+}
+figure {
+    width:495px;
+    float: left;
+}
+figure img {
+    margin-left: 68px;
+    margin-top: 25px;
+}
+nav.menu {
+    width:675px;
+    float:left;
+}
+nav.menu ul {
+    list-style: none;
+    width:100%;
+    height:100%;
+    overflow: auto;
+    /*display: table;*/
+}
+nav.menu li {
+    width:82px;
+    height:115px;
+    float:left;
+    text-align: center;
+    background:url('../images/bg_menu.png') no-repeat left bottom;
+    /*display: table-cell;
+    vertical-align: middle;*/
+}
+nav.menu li.current, nav.menu li:hover {
+    background:url('../images/active menu.png') no-repeat left bottom;
+}
+nav.menu li:hover h2, nav.menu li:hover h3, nav.menu li.current h2, nav.menu li.current h3{
+    color:#3ba0c5;
+}
+nav a {
+    font-family: Tahoma, san-serif;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    color:#9d9d9d;
+}
+/*body {
+    -webkit-filter:contrast(50%);
+    -webkit-filter:brightness(50%);
+}
+body:hover {
+    -webkit-filter:contrast(100%);
+    -webkit-filter:brightness(100%);
+}*/
