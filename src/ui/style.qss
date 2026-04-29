@@ -1,0 +1,72 @@
+QMainWindow {
+    background-color: #f3f5f8;
+    color: #1f2937;
+}
+
+#TopBar {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+#Sidebar {
+    background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 #1f2a44, stop:1 #111827);
+    border-radius: 12px;
+}
+
+#SidebarTitle { color: #f9fafb; font-size: 16px; font-weight: 700; }
+
+QListWidget#StepsList {
+    background: transparent;
+    color: #cfd8e3;
+    border: none;
+    font-size: 13px;
+}
+QListWidget#StepsList::item { padding: 10px; border-radius: 8px; }
+QListWidget#StepsList::item:selected { background: #2f6fed; color: white; font-weight: 600; }
+
+#Card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+QGroupBox {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-weight: 700;
+    color: #111827;
+}
+QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 4px; }
+
+QPushButton {
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
+}
+QPushButton:hover { background-color: #1d4ed8; }
+QPushButton#Secondary {
+    background-color: #e5e7eb;
+    color: #111827;
+}
+QPushButton#Secondary:hover { background-color: #d1d5db; }
+
+QLineEdit, QComboBox, QPlainTextEdit {
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+QProgressBar {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #f3f4f6;
+    text-align: center;
+}
+QProgressBar::chunk { background: #22c55e; border-radius: 7px; }
