@@ -44,17 +44,25 @@ class MainWindow(QMainWindow):
         logging.basicConfig(filename=str(self.log_file), level=logging.INFO)
         self.logger = logging.getLogger("VideoTranslatorPro")
 
+    def _refresh_step_list(self) -> None:
+        colors = {"Chưa làm":"⚪", "Đang xử lý":"🔵", "Hoàn tất":"🟢", "Lỗi":"🔴"}
+        self.steps.clear()
+        for i, name in enumerate(self.step_names, start=1):
+            st = self.step_status[i-1]
+            self.steps.addItem(f"{colors.get(st, '⚪')} Bước {i}: {name}")
+
+    def _set_step_status(self, idx: int, status: str) -> None:
+        if 0 <= idx < len(self.step_status):
+            self.step_status[idx] = status
+            self._refresh_step_list()
+
     def _build_ui(self) -> None:
         root = QWidget()
         h = QHBoxLayout(root)
         self.steps = QListWidget()
-        self.steps.addItems([
-            "Bước 1: Chọn video",
-            "Bước 2: Chọn mục tiêu đầu ra",
-            "Bước 3: Phân tích tự động",
-            "Bước 4: Xem lại lời thoại & người nói",
-            "Bước 5: Xuất file",
-        ])
+        self.step_names = ["Chọn video", "Cấu hình đầu ra", "Phân tích tự động", "Kiểm tra & chỉnh sửa", "Preview", "Xuất file"]
+        self.step_status = ["Chưa làm"] * len(self.step_names)
+        self._refresh_step_list()
         self.steps.setFixedWidth(280)
         h.addWidget(self.steps)
 
@@ -358,7 +366,8 @@ class MainWindow(QMainWindow):
         self._log(f"Đã xuất báo cáo lỗi: {p}")
 
     def _log(self, msg: str) -> None:
-        self.log.appendPlainText(msg)
+        from datetime import datetime
+        self.log.appendPlainText("[" + datetime.now().strftime("%H:%M:%S") + "] " + msg)
         self.logger.info(msg)
 
 
