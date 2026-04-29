@@ -216,7 +216,7 @@ class MainWindow(QMainWindow):
         grid = QGridLayout()
         self.btn_start = QPushButton("Bắt đầu nhận diện")
         self.btn_translate = QPushButton("Dịch (Phase sau)")
-        self.btn_tts = QPushButton("Tạo giọng đọc (Phase sau)")
+        self.btn_tts = QPushButton("Tạo giọng đọc")
         self.btn_sync_dub = QPushButton("Đồng bộ & lồng tiếng (Phase sau)")
         self.btn_render = QPushButton("Kết xuất phụ đề")
         self.btn_test_voice = QPushButton("Thử giọng")
@@ -345,7 +345,23 @@ class MainWindow(QMainWindow):
         self._log("Phase 2 hiện chỉ triển khai nhận diện giọng nói. Chức năng dịch sẽ mở ở Phase sau.")
 
     def _run_tts(self) -> None:
-        self._log("Phase 2 hiện chỉ triển khai nhận diện giọng nói. Chức năng TTS sẽ mở ở Phase sau.")
+        if not self.current_segments:
+            self._log("Chưa có dữ liệu để tạo giọng đọc.")
+            return
+        try:
+            self._log("Bắt đầu tạo TTS tiếng Việt cho từng đoạn...")
+            self.current_segments = synthesize_segments(
+                self.current_segments,
+                self.output_folder.text().strip(),
+                self.tts_voice.currentText(),
+                int(self.tts_speed.text() or 0),
+                int(self.tts_volume.text() or 0),
+                int(self.tts_pitch.text() or 0),
+                speaker_profiles=self.speaker_profiles,
+            )
+            self._log(f"Đã tạo {len(self.current_segments)} file TTS trong thư mục temp/tts_segments.")
+        except Exception:
+            self._log("TTS tiếng Việt bằng edge-tts cần kết nối Internet.")
 
     def _sync_and_export_dubbed(self) -> None:
         if not self.current_segments or not self.selected_video_path:
@@ -364,7 +380,7 @@ class MainWindow(QMainWindow):
             out = synthesize_preview(self.tts_test_text.text().strip() or "Xin chào", self.output_folder.text().strip(), self.tts_voice.currentText(), int(self.tts_speed.text() or 0), int(self.tts_volume.text() or 0), int(self.tts_pitch.text() or 0))
             self._log(f"Đã lưu thử giọng: {out}")
         except Exception:
-            self._log("TTS tiếng Việt với edge-tts cần kết nối Internet.")
+            self._log("TTS tiếng Việt bằng edge-tts cần kết nối Internet.")
 
     def _render_subtitles(self) -> None:
         if not self.current_segments or not self.selected_video_path:
