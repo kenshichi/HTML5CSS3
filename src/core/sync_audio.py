@@ -104,10 +104,10 @@ def export_final_dubbed_video(video_path: str, tts_timeline_audio: str, output_p
     log = (lambda m: logger(m)) if logger else (lambda m: None)
     ov = max(0, original_audio_volume_percentage) / 100.0
     vv = max(0, vietnamese_voice_volume_percentage) / 100.0
-    if original_audio_mode == "Mute original audio":
+    if original_audio_mode in ["Mute original audio", "Tắt âm gốc", "Tắt âm thanh gốc"]:
         fc = f"[1:a]volume={vv}[outa]"
     else:
-        orig = ov if original_audio_mode == "Lower original audio volume" else 1.0
+        orig = ov if original_audio_mode in ["Lower original audio volume", "Giảm âm lượng", "Giảm âm lượng gốc"] else 1.0
         fc = f"[0:a]volume={orig}[o];[1:a]volume={vv}[v];[o][v]amix=inputs=2:normalize=0[outa]"
     cmd = ["ffmpeg", "-y", "-i", video_path, "-i", tts_timeline_audio, "-filter_complex", fc, "-map", "0:v", "-map", "[outa]", "-c:v", "copy", "-c:a", "aac", output_path]
     log("FFmpeg command: " + " ".join(cmd))

@@ -202,12 +202,12 @@ class MainWindow(QMainWindow):
         self.tts_voice = QComboBox(); self.tts_voice.addItems([VOICE_FEMALE, VOICE_MALE])
         self.tts_speed = QLineEdit("0"); self.tts_volume = QLineEdit("0"); self.tts_pitch = QLineEdit("0")
         self.max_speech_speed = QLineEdit("1.25"); self.safety_gap = QLineEdit("0.15")
-        self.orig_audio_mode = QComboBox(); self.orig_audio_mode.addItems(["Giữ âm thanh gốc", "Giảm âm lượng gốc", "Tắt âm thanh gốc"])
+        self.orig_audio_mode = QComboBox(); self.orig_audio_mode.addItems(["Giữ nguyên", "Giảm âm lượng", "Tắt âm gốc"])
         self.orig_audio_pct = QLineEdit("70"); self.vi_voice_pct = QLineEdit("100")
         self.tts_test_text = QLineEdit("Xin chào, đây là đoạn thử giọng tiếng Việt.")
         f.addRow("Giọng mặc định", self.tts_voice); f.addRow("Tốc độ", self.tts_speed); f.addRow("Âm lượng", self.tts_volume); f.addRow("Cao độ", self.tts_pitch)
-        f.addRow("Tốc độ tối đa", self.max_speech_speed); f.addRow("Khoảng cách an toàn (giây)", self.safety_gap)
-        f.addRow("Âm thanh gốc", self.orig_audio_mode); f.addRow("Âm lượng gốc (%)", self.orig_audio_pct); f.addRow("Âm lượng giọng Việt (%)", self.vi_voice_pct)
+        f.addRow("Tốc độ nói tối đa", self.max_speech_speed); f.addRow("Khoảng nghỉ an toàn", self.safety_gap)
+        f.addRow("Chế độ âm thanh gốc", self.orig_audio_mode); f.addRow("Âm lượng âm thanh gốc", self.orig_audio_pct); f.addRow("Âm lượng giọng Việt", self.vi_voice_pct)
         f.addRow("Câu thử giọng", self.tts_test_text)
         return w
 
@@ -368,10 +368,11 @@ class MainWindow(QMainWindow):
             self._log("Cần có video và dữ liệu TTS.")
             return
         try:
+            self._log("Đang đồng bộ từng đoạn TTS theo mốc thời gian gốc...")
             timeline, plan = sync_tts_to_timeline(self.selected_video_path, self.current_segments, self.output_folder.text().strip(), max_speed=min(1.5, float(self.max_speech_speed.text() or 1.25)), safety_gap=float(self.safety_gap.text() or 0.15), logger=self._log)
             out = str(Path(self.output_folder.text().strip()) / "final_dubbed_video.mp4")
             export_final_dubbed_video(self.selected_video_path, timeline, out, self.orig_audio_mode.currentText(), int(self.orig_audio_pct.text() or 70), int(self.vi_voice_pct.text() or 100), logger=self._log)
-            self._log(f"Xuất video lồng tiếng: {out} | số đoạn: {len(plan)}")
+            self._log(f"Hoàn tất đồng bộ và lồng tiếng: {out} | số đoạn: {len(plan)}")
         except Exception as e:
             self._log(f"LỖI đồng bộ/lồng tiếng: {e}")
 
