@@ -109,7 +109,7 @@ class MainWindow(QMainWindow):
         v.addWidget(QLabel("🎬 VideoTranslatorPro"))
         self.steps = QListWidget()
         self.steps.addItems([
-            "1. Nhập video", "2. Nhận diện giọng nói", "3. Dịch", "4. Phụ đề", "5. Lồng tiếng", "6. Giọng theo người nói", "7. Xuất file"
+            "1. Chọn video", "2. Nhận diện", "3. Dịch", "4. Phụ đề", "5. Lồng tiếng", "6. Giọng nhân vật", "7. Xuất file"
         ])
         v.addWidget(self.steps)
         v.addStretch(1)
@@ -139,10 +139,10 @@ class MainWindow(QMainWindow):
         self.output_folder = QLineEdit(str(Path.cwd() / "output")); self.output_folder.setReadOnly(True)
         self.btn_video = QPushButton("Chọn video")
         self.btn_output = QPushButton("Chọn thư mục xuất")
-        g.addWidget(QLabel("Video"), 0, 0); g.addWidget(self.video_name, 0, 1); g.addWidget(self.btn_video, 0, 2)
+        g.addWidget(QLabel("Tệp video"), 0, 0); g.addWidget(self.video_name, 0, 1); g.addWidget(self.btn_video, 0, 2)
         g.addWidget(QLabel("Thời lượng"), 1, 0); g.addWidget(self.video_duration, 1, 1)
         g.addWidget(QLabel("Độ phân giải"), 1, 2); g.addWidget(self.video_resolution, 1, 3)
-        g.addWidget(QLabel("Thư mục xuất"), 2, 0); g.addWidget(self.output_folder, 2, 1, 1, 3); g.addWidget(self.btn_output, 2, 4)
+        g.addWidget(QLabel("Thư mục đầu ra"), 2, 0); g.addWidget(self.output_folder, 2, 1, 1, 3); g.addWidget(self.btn_output, 2, 4)
         return top
 
     def _build_settings_area(self) -> QWidget:
@@ -211,18 +211,18 @@ class MainWindow(QMainWindow):
     def _tab_export(self) -> QWidget:
         w = QWidget(); v = QVBoxLayout(w)
         grid = QGridLayout()
-        self.btn_start = QPushButton("1) Nhận diện giọng nói")
-        self.btn_translate = QPushButton("2) Dịch")
-        self.btn_tts = QPushButton("3) Tạo TTS")
-        self.btn_sync_dub = QPushButton("4) Đồng bộ + Lồng tiếng")
-        self.btn_render = QPushButton("5) Xuất phụ đề")
+        self.btn_start = QPushButton("Bắt đầu nhận diện")
+        self.btn_translate = QPushButton("Dịch")
+        self.btn_tts = QPushButton("Tạo giọng đọc")
+        self.btn_sync_dub = QPushButton("Đồng bộ & lồng tiếng")
+        self.btn_render = QPushButton("Kết xuất")
         self.btn_test_voice = QPushButton("Thử giọng")
         self.btn_check_env = QPushButton("Kiểm tra môi trường")
-        self.btn_export_debug = QPushButton("Xuất báo cáo debug")
+        self.btn_export_debug = QPushButton("Xuất báo cáo lỗi")
+        self.btn_cancel = QPushButton("Hủy")
         self.btn_export_project = QPushButton("Xuất Project JSON")
         self.btn_import_project = QPushButton("Nhập Project JSON")
-        buttons = [self.btn_start, self.btn_translate, self.btn_tts, self.btn_sync_dub, self.btn_render,
-                   self.btn_test_voice, self.btn_check_env, self.btn_export_debug, self.btn_export_project, self.btn_import_project]
+        buttons = [self.btn_start, self.btn_translate, self.btn_tts, self.btn_sync_dub, self.btn_test_voice, self.btn_render, self.btn_check_env, self.btn_export_debug, self.btn_cancel, self.btn_export_project, self.btn_import_project]
         for i, b in enumerate(buttons):
             grid.addWidget(b, i // 2, i % 2)
         v.addLayout(grid)
@@ -233,6 +233,9 @@ class MainWindow(QMainWindow):
     def _build_table_area(self) -> QWidget:
         w = QWidget(); h = QHBoxLayout(w)
         self.table = QTableWidget(0, 5)
+        self.table.verticalHeader().setDefaultSectionSize(34)
+        self.table.setAlternatingRowColors(True)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.table.setHorizontalHeaderLabels(["Bắt đầu", "Kết thúc", "Người nói", "Văn bản gốc", "Bản dịch tiếng Việt"])
         self.table.horizontalHeader().setStretchLastSection(True)
         h.addWidget(self.table, 2)
@@ -240,8 +243,10 @@ class MainWindow(QMainWindow):
         right = QGroupBox("Giọng theo người nói")
         rv = QVBoxLayout(right)
         self.speaker_table = QTableWidget(0, 4)
-        self.speaker_table.setHorizontalHeaderLabels(["Người nói", "Giọng", "Tốc độ", "Âm lượng"])
-        self.btn_apply_speaker = QPushButton("Áp dụng chỉnh sửa người nói")
+        self.speaker_table.verticalHeader().setDefaultSectionSize(32)
+        self.speaker_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.speaker_table.setHorizontalHeaderLabels(["Nhân vật", "Giọng đọc", "Tốc độ", "Âm lượng"])
+        self.btn_apply_speaker = QPushButton("Áp dụng cấu hình giọng")
         self.btn_auto_diar = QPushButton("Tách người nói tự động (tùy chọn)")
         self.lbl_diar = QLabel("Tách người nói tự động là tùy chọn và có thể cần cấu hình pyannote.audio.")
         rv.addWidget(self.speaker_table)
@@ -255,6 +260,7 @@ class MainWindow(QMainWindow):
         self.btn_video.clicked.connect(self._pick_video)
         self.btn_output.clicked.connect(self._pick_output)
         self.btn_start.clicked.connect(self._run_transcription)
+        self.btn_cancel.clicked.connect(lambda: self._log("Đã hủy thao tác hiện tại."))
         self.btn_translate.clicked.connect(self._run_translation)
         self.btn_tts.clicked.connect(self._run_tts)
         self.btn_sync_dub.clicked.connect(self._sync_and_export_dubbed)
