@@ -80,3 +80,8 @@ Use this checklist before shipping:
 7. **Model policy check**
    - Verify large models are not bundled in `dist/`.
    - Models are downloaded/selected externally under `models/`.
+
+## Giao diện tiếng Việt (Phase 1A)
+- Toàn bộ giao diện đã Việt hóa: nhãn, nút, tiêu đề, bảng, hộp thoại và thông báo.
+- Bố cục được tách theo tab: Chung, Nhận diện giọng nói, Dịch, Phụ đề, Lồng tiếng, Xuất file.
+- Thiết kế tối ưu hiển thị cho 1366x768, 1600x900, 1920x1080 và scale 100/125/150%.
