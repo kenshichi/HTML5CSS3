@@ -11,7 +11,7 @@ class SubtitleStyle:
     font_file: str = ""
     font_name: str = "Arial"
     font_size: int = 36
-    text_color: str = "#FFFFFF"
+    text_color: str = "#000000"
     outline_color: str = "#000000"
     background_color: str = "#000000"
     background_opacity: int = 40

@@ -188,12 +188,13 @@ class MainWindow(QMainWindow):
         self.text_color = QLineEdit("#000000"); self.outline_color = QLineEdit("#000000")
         self.bg_color = QLineEdit("#000000"); self.bg_opacity = QLineEdit("40")
         self.sub_pos = QComboBox(); self.sub_pos.addItems(["top", "middle", "bottom"])
+        self.bold = QComboBox(); self.bold.addItems(["off", "on"])
         self.cover_enabled = QComboBox(); self.cover_enabled.addItems(["off", "on"])
         self.cover_color = QLineEdit("yellow")
         f.addRow("Phông chữ", self.font_name); f.addRow("Cỡ chữ", self.font_size)
         f.addRow("Màu chữ", self.text_color); f.addRow("Màu viền", self.outline_color)
         f.addRow("Màu nền", self.bg_color); f.addRow("Độ mờ nền", self.bg_opacity)
-        f.addRow("Vị trí", self.sub_pos); f.addRow("Che phụ đề cũ", self.cover_enabled); f.addRow("Màu vùng che", self.cover_color)
+        f.addRow("Vị trí phụ đề", self.sub_pos); f.addRow("In đậm", self.bold); f.addRow("Che phụ đề cũ", self.cover_enabled); f.addRow("Màu vùng che", self.cover_color)
         return w
 
     def _tab_tts(self) -> QWidget:
@@ -217,7 +218,7 @@ class MainWindow(QMainWindow):
         self.btn_translate = QPushButton("Dịch (Phase sau)")
         self.btn_tts = QPushButton("Tạo giọng đọc (Phase sau)")
         self.btn_sync_dub = QPushButton("Đồng bộ & lồng tiếng (Phase sau)")
-        self.btn_render = QPushButton("Kết xuất phụ đề (Phase sau)")
+        self.btn_render = QPushButton("Kết xuất phụ đề")
         self.btn_test_voice = QPushButton("Thử giọng")
         self.btn_check_env = QPushButton("Kiểm tra môi trường")
         self.btn_export_debug = QPushButton("Xuất báo cáo lỗi")
@@ -370,7 +371,7 @@ class MainWindow(QMainWindow):
             self._log("Cần có video và dữ liệu dịch.")
             return
         out = Path(self.output_folder.text().strip()); out.mkdir(parents=True, exist_ok=True)
-        style = SubtitleStyle(font_name=self.font_name.text().strip() or "Arial", font_size=int(self.font_size.text() or 36), text_color=self.text_color.text().strip() or "#000000", outline_color=self.outline_color.text().strip() or "#000000", background_color=self.bg_color.text().strip() or "#000000", background_opacity=int(float(self.bg_opacity.text() or 40)), position=self.sub_pos.currentText())
+        style = SubtitleStyle(font_name=self.font_name.text().strip() or "Arial", font_size=int(self.font_size.text() or 36), text_color=self.text_color.text().strip() or "#000000", outline_color=self.outline_color.text().strip() or "#000000", background_color=self.bg_color.text().strip() or "#000000", background_opacity=int(float(self.bg_opacity.text() or 40)), position=self.sub_pos.currentText(), bold=(self.bold.currentText()=="on"))
         cover = CoverBoxSettings(enabled=(self.cover_enabled.currentText() == "on"), color=self.cover_color.text().strip() or "yellow")
         srt = generate_srt(self.current_segments, str(out / "translated.srt"))
         ass = generate_ass(self.current_segments, str(out / "translated.ass"), style)
@@ -379,7 +380,7 @@ class MainWindow(QMainWindow):
         if self.export.currentText() == "MP4 video":
             final = str(out / "final_subtitled_video.mp4")
             render_subtitled_video(self.selected_video_path, ass, final, cover, logger=self._log)
-            self._log(f"Đã tạo: {final}")
+            self._log(f"Đã kết xuất video phụ đề: {final}")
 
     def _refresh_speaker_panel(self) -> None:
         self.speaker_table.setRowCount(0)
