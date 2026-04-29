@@ -12,7 +12,7 @@ class FFmpegNotFoundError(RuntimeError):
 def extract_audio_16k_mono(video_path: str, output_wav_path: str) -> str:
     ffmpeg_bin = shutil.which("ffmpeg")
     if not ffmpeg_bin:
-        raise FFmpegNotFoundError("ffmpeg is not installed or not available in PATH.")
+        raise FFmpegNotFoundError("Không tìm thấy ffmpeg trong PATH. Vui lòng cài ffmpeg trước khi nhận diện.")
 
     output = Path(output_wav_path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -33,5 +33,5 @@ def extract_audio_16k_mono(video_path: str, output_wav_path: str) -> str:
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        raise RuntimeError(f"ffmpeg audio extraction failed: {result.stderr.strip()}")
+        raise RuntimeError(f"Trích xuất âm thanh bằng ffmpeg thất bại: {result.stderr.strip()}")
     return str(output)

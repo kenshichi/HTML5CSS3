@@ -214,10 +214,10 @@ class MainWindow(QMainWindow):
         w = QWidget(); v = QVBoxLayout(w)
         grid = QGridLayout()
         self.btn_start = QPushButton("Bắt đầu nhận diện")
-        self.btn_translate = QPushButton("Dịch")
-        self.btn_tts = QPushButton("Tạo giọng đọc")
-        self.btn_sync_dub = QPushButton("Đồng bộ & lồng tiếng")
-        self.btn_render = QPushButton("Kết xuất")
+        self.btn_translate = QPushButton("Dịch (Phase sau)")
+        self.btn_tts = QPushButton("Tạo giọng đọc (Phase sau)")
+        self.btn_sync_dub = QPushButton("Đồng bộ & lồng tiếng (Phase sau)")
+        self.btn_render = QPushButton("Kết xuất phụ đề (Phase sau)")
         self.btn_test_voice = QPushButton("Thử giọng")
         self.btn_check_env = QPushButton("Kiểm tra môi trường")
         self.btn_export_debug = QPushButton("Xuất báo cáo lỗi")
@@ -319,39 +319,32 @@ class MainWindow(QMainWindow):
             self._log("Vui lòng chọn video trước.")
             return
         try:
-            segs, lang = transcribe_video(self.selected_video_path, self.output_folder.text().strip(), self.source_lang.currentText(), self.model_size.currentText(), self.compute_type.currentText())
+            self._log("Bắt đầu nhận diện: trích xuất âm thanh 16kHz mono WAV...")
+            self._log(f"Model Whisper: {self.model_size.currentText()} | Compute: {self.compute_type.currentText()} | Ngôn ngữ: {self.source_lang.currentText()}")
+            segs, lang = transcribe_video(
+                self.selected_video_path,
+                self.output_folder.text().strip(),
+                self.source_lang.currentText(),
+                self.model_size.currentText(),
+                self.compute_type.currentText(),
+            )
+            self._log("Đã nhận diện xong, đang cập nhật bảng transcript...")
             self.current_segments = ensure_speakers(segs)
             self.detected_language = lang
             self.speaker_profiles = build_speaker_profiles(self.current_segments, self.speaker_profiles)
             self._fill_table(self.current_segments)
             self._refresh_speaker_panel()
-            self._log(f"Nhận diện hoàn tất: {len(segs)} đoạn")
+            self._log(f"Hoàn tất nhận diện: {len(segs)} đoạn. Đã lưu transcript.json trong thư mục đầu ra.")
         except FFmpegNotFoundError as e:
-            self._log(f"LỖI: {e}")
+            self._log(f"LỖI ffmpeg: {e}")
         except Exception as e:
             self._log(f"LỖI nhận diện: {e}")
 
     def _run_translation(self) -> None:
-        if not self.current_segments:
-            self._log("Chưa có bản chép lời.")
-            return
-        mode = "full" if self.translation_style.currentIndex() == 0 else "short"
-        segs, w = translate_segments_to_vietnamese(self.current_segments, self.output_folder.text().strip(), self.source_lang.currentText(), mode, self.detected_language)
-        self.current_segments = ensure_speakers(segs)
-        self.speaker_profiles = build_speaker_profiles(self.current_segments, self.speaker_profiles)
-        self._fill_table(self.current_segments)
-        self._refresh_speaker_panel()
-        self._log(w or "Dịch hoàn tất.")
+        self._log("Phase 2 hiện chỉ triển khai nhận diện giọng nói. Chức năng dịch sẽ mở ở Phase sau.")
 
     def _run_tts(self) -> None:
-        if not self.current_segments:
-            self._log("Chưa có dữ liệu dịch để tạo giọng.")
-            return
-        try:
-            self.current_segments = synthesize_segments(self.current_segments, self.output_folder.text().strip(), self.tts_voice.currentText(), int(self.tts_speed.text() or 0), int(self.tts_volume.text() or 0), int(self.tts_pitch.text() or 0), speaker_profiles=self.speaker_profiles)
-            self._log(f"Đã tạo TTS cho {len(self.current_segments)} đoạn.")
-        except Exception:
-            self._log("TTS tiếng Việt với edge-tts cần kết nối Internet.")
+        self._log("Phase 2 hiện chỉ triển khai nhận diện giọng nói. Chức năng TTS sẽ mở ở Phase sau.")
 
     def _sync_and_export_dubbed(self) -> None:
         if not self.current_segments or not self.selected_video_path:
