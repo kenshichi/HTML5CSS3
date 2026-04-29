@@ -133,16 +133,18 @@ class MainWindow(QMainWindow):
 
     def _build_top_info(self) -> QWidget:
         top = QFrame(); g = QGridLayout(top)
-        self.video_name = QLineEdit("Chưa chọn video"); self.video_name.setReadOnly(True)
-        self.video_duration = QLineEdit("--:--:--"); self.video_duration.setReadOnly(True)
-        self.video_resolution = QLineEdit("---- x ----"); self.video_resolution.setReadOnly(True)
+        self.file_name = QLineEdit("Chưa chọn video"); self.file_name.setReadOnly(True)
+        self.file_duration = QLineEdit("--:--:--"); self.file_duration.setReadOnly(True)
+        self.file_resolution = QLineEdit("---- x ----"); self.file_resolution.setReadOnly(True)
+        self.input_path = QLineEdit("--"); self.input_path.setReadOnly(True)
         self.output_folder = QLineEdit(str(Path.cwd() / "output")); self.output_folder.setReadOnly(True)
         self.btn_video = QPushButton("Chọn video")
         self.btn_output = QPushButton("Chọn thư mục xuất")
-        g.addWidget(QLabel("Tệp video"), 0, 0); g.addWidget(self.video_name, 0, 1); g.addWidget(self.btn_video, 0, 2)
-        g.addWidget(QLabel("Thời lượng"), 1, 0); g.addWidget(self.video_duration, 1, 1)
-        g.addWidget(QLabel("Độ phân giải"), 1, 2); g.addWidget(self.video_resolution, 1, 3)
-        g.addWidget(QLabel("Thư mục đầu ra"), 2, 0); g.addWidget(self.output_folder, 2, 1, 1, 3); g.addWidget(self.btn_output, 2, 4)
+        g.addWidget(QLabel("Tên tệp"), 0, 0); g.addWidget(self.file_name, 0, 1, 1, 3); g.addWidget(self.btn_video, 0, 4)
+        g.addWidget(QLabel("Thời lượng"), 1, 0); g.addWidget(self.file_duration, 1, 1)
+        g.addWidget(QLabel("Độ phân giải"), 1, 2); g.addWidget(self.file_resolution, 1, 3)
+        g.addWidget(QLabel("Đường dẫn"), 2, 0); g.addWidget(self.input_path, 2, 1, 1, 4)
+        g.addWidget(QLabel("Thư mục đầu ra"), 3, 0); g.addWidget(self.output_folder, 3, 1, 1, 3); g.addWidget(self.btn_output, 3, 4)
         return top
 
     def _build_settings_area(self) -> QWidget:
@@ -275,10 +277,35 @@ class MainWindow(QMainWindow):
 
     def _pick_video(self) -> None:
         p, _ = QFileDialog.getOpenFileName(self, "Chọn video", "", "Video Files (*.mp4 *.mkv *.avi *.mov)")
-        if p:
-            self.selected_video_path = p
-            self.video_name.setText(Path(p).name)
+        if not p:
+            return
+        self.selected_video_path = p
+        self.file_name.setText(Path(p).name)
+        self.input_path.setText(p)
+        try:
+            meta = self._read_video_metadata(p)
+            self.file_duration.setText(meta["duration"])
+            self.file_resolution.setText(meta["resolution"])
             self._log(f"Đã chọn video: {p}")
+        except Exception as e:
+            self.file_duration.setText("Không đọc được")
+            self.file_resolution.setText("Không đọc được")
+            self._log(f"Cảnh báo: Không thể đọc metadata video ({e}).")
+
+    def _read_video_metadata(self, video_path: str) -> Dict[str, str]:
+        cmd = [
+            "ffprobe", "-v", "error",
+            "-select_streams", "v:0",
+            "-show_entries", "stream=width,height:format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            video_path,
+        ]
+        out = subprocess.check_output(cmd, text=True).strip().splitlines()
+        if len(out) < 3:
+            raise RuntimeError("Thiếu dữ liệu ffprobe")
+        width, height, dur = out[0], out[1], float(out[2])
+        h = int(dur // 3600); m = int((dur % 3600) // 60); s = int(dur % 60)
+        return {"duration": f"{h:02d}:{m:02d}:{s:02d}", "resolution": f"{width} x {height}"}
 
     def _pick_output(self) -> None:
         p = QFileDialog.getExistingDirectory(self, "Chọn thư mục xuất")
