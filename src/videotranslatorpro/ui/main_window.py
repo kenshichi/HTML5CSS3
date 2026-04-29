@@ -423,7 +423,7 @@ class MainWindow(QMainWindow):
             if i:
                 self.current_segments[r]["speaker"] = i.text()
         self._refresh_speaker_panel()
-        self._log("Đã áp dụng chỉnh sửa người nói.")
+        self._log("Đã áp dụng nhãn người nói và cấu hình giọng theo từng nhân vật.")
 
     def _export_project_json(self) -> None:
         p, _ = QFileDialog.getSaveFileName(self, "Xuất Project JSON", str(Path(self.output_folder.text().strip()) / "project.json"), "JSON (*.json)")
@@ -443,7 +443,7 @@ class MainWindow(QMainWindow):
         self.output_folder.setText(d.get("output", self.output_folder.text()))
         self._fill_table(self.current_segments)
         self._refresh_speaker_panel()
-        self._log(f"Đã nhập project: {p}")
+        self._log(f"Đã nhập project: {p}. Cấu hình người nói/giọng đọc đã được khôi phục.")
 
     def _auto_diarize_info(self) -> None:
         self.lbl_diar.setText(auto_diarize_placeholder(self.selected_video_path).get("message", "Tùy chọn"))
@@ -472,7 +472,9 @@ class MainWindow(QMainWindow):
             r = self.table.rowCount(); self.table.insertRow(r)
             self.table.setItem(r, 0, QTableWidgetItem(f"{seg['start']:.2f}"))
             self.table.setItem(r, 1, QTableWidgetItem(f"{seg['end']:.2f}"))
-            self.table.setItem(r, 2, QTableWidgetItem(seg.get("speaker", "SPEAKER_00")))
+            item_sp = QTableWidgetItem(seg.get("speaker", "SPEAKER_00"))
+            item_sp.setToolTip("Có thể sửa nhãn người nói trực tiếp (ví dụ: SPEAKER_00, SPEAKER_01, MC, Khách mời)")
+            self.table.setItem(r, 2, item_sp)
             self.table.setItem(r, 3, QTableWidgetItem(seg.get("source_text", "")))
             self.table.setItem(r, 4, QTableWidgetItem(seg.get("vi_subtitle_text") or seg.get("vi_dubbing_text") or ""))
 
